@@ -66,12 +66,16 @@
       <section class="records">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Today</p>
+            <p class="eyebrow" id="dateLabel">Today</p>
             <h2>Attendance</h2>
           </div>
           <div class="record-actions">
+            <label class="date-control">
+              Date
+              <input id="attendanceDate" type="date">
+            </label>
             <button id="exportCsv" type="button">Export CSV</button>
-            <button id="clearToday" type="button">Clear today</button>
+            <button id="clearDay" type="button">Clear day</button>
           </div>
         </div>
         <div class="table-wrap">

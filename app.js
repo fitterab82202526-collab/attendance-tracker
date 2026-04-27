@@ -1,5 +1,5 @@
 const storageKey = "trainee-attendance-v1";
-const todayKey = new Date().toISOString().slice(0, 10);
+const todayKey = getLocalDateKey(new Date());
 
 const els = {
   video: document.querySelector("#camera"),
@@ -17,14 +17,17 @@ const els = {
   total: document.querySelector("#statTotal"),
   present: document.querySelector("#statPresent"),
   missing: document.querySelector("#statMissing"),
+  date: document.querySelector("#attendanceDate"),
+  dateLabel: document.querySelector("#dateLabel"),
   exportCsv: document.querySelector("#exportCsv"),
-  clearToday: document.querySelector("#clearToday"),
+  clearDay: document.querySelector("#clearDay"),
 };
 
 let stream = null;
 let capturedDescriptor = null;
 let capturedPreview = null;
 let detector = null;
+let selectedDate = todayKey;
 
 const state = loadState();
 
@@ -41,6 +44,13 @@ function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function setStatus(message, tone = "neutral") {
   els.status.textContent = message;
   els.status.style.color =
@@ -48,8 +58,8 @@ function setStatus(message, tone = "neutral") {
 }
 
 function todayAttendance() {
-  if (!state.attendance[todayKey]) state.attendance[todayKey] = {};
-  return state.attendance[todayKey];
+  if (!state.attendance[selectedDate]) state.attendance[selectedDate] = {};
+  return state.attendance[selectedDate];
 }
 
 async function startCamera() {
@@ -252,7 +262,7 @@ function exportCsv() {
   state.trainees.forEach((trainee) => {
     const record = attendance[trainee.id];
     rows.push([
-      todayKey,
+      selectedDate,
       trainee.name,
       trainee.id,
       record ? "Present" : "Pending",
@@ -267,22 +277,30 @@ function exportCsv() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `attendance-${todayKey}.csv`;
+  link.download = `attendance-${selectedDate}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
 
-function clearToday() {
-  state.attendance[todayKey] = {};
+function clearDay() {
+  state.attendance[selectedDate] = {};
   saveState();
   render();
-  setStatus("Today's attendance cleared.");
+  setStatus("Selected day's attendance cleared.");
+}
+
+function changeDate() {
+  selectedDate = els.date.value || todayKey;
+  render();
 }
 
 function render() {
   const attendance = todayAttendance();
   const presentCount = state.trainees.filter((trainee) => attendance[trainee.id]).length;
+  const isToday = selectedDate === todayKey;
 
+  els.date.value = selectedDate;
+  els.dateLabel.textContent = isToday ? "Today" : selectedDate;
   els.total.textContent = state.trainees.length;
   els.present.textContent = presentCount;
   els.missing.textContent = Math.max(state.trainees.length - presentCount, 0);
@@ -343,6 +361,7 @@ els.capture.addEventListener("click", captureForNewTrainee);
 els.recognize.addEventListener("click", recognizeFace);
 els.save.addEventListener("click", saveTrainee);
 els.exportCsv.addEventListener("click", exportCsv);
-els.clearToday.addEventListener("click", clearToday);
+els.clearDay.addEventListener("click", clearDay);
+els.date.addEventListener("change", changeDate);
 
 render();

@@ -175,6 +175,15 @@ canvas {
   margin-top: 14px;
 }
 
+.record-actions {
+  align-items: end;
+  margin-top: 0;
+}
+
+.date-control {
+  min-width: 180px;
+}
+
 .status {
   min-height: 22px;
   margin: 12px 0 0;
@@ -202,6 +211,10 @@ input {
   border-radius: 8px;
   padding: 0 12px;
   color: var(--text);
+}
+
+input[type="date"] {
+  min-width: 160px;
 }
 
 input:focus {
@@ -310,7 +323,8 @@ th {
   }
 
   .camera-actions button,
-  .record-actions button {
+  .record-actions button,
+  .date-control {
     flex: 1 1 100%;
   }
 
