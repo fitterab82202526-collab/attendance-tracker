@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trainee Attendance Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar" aria-label="Overview">
+        <div>
+          <p class="eyebrow">Training room</p>
+          <h1>Trainee Attendance Tracker</h1>
+        </div>
+        <div class="stats">
+          <div>
+            <span id="statTotal">0</span>
+            <small>Trainees</small>
+          </div>
+          <div>
+            <span id="statPresent">0</span>
+            <small>Present today</small>
+          </div>
+          <div>
+            <span id="statMissing">0</span>
+            <small>Pending</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="camera-panel">
+          <div class="camera-frame">
+            <video id="camera" autoplay muted playsinline></video>
+            <canvas id="overlay" aria-hidden="true"></canvas>
+            <div id="cameraEmpty" class="camera-empty">
+              <strong>Camera is off</strong>
+              <span>Start the camera to enroll or recognize trainees.</span>
+            </div>
+          </div>
+
+          <div class="camera-actions">
+            <button id="startCamera" class="primary" type="button">Start camera</button>
+            <button id="recognizeFace" type="button">Recognize & mark</button>
+            <button id="captureFace" type="button">Capture for new trainee</button>
+          </div>
+          <p id="status" class="status">Ready.</p>
+        </div>
+
+        <aside class="side-panel" aria-label="Register trainee">
+          <h2>Add trainee</h2>
+          <label>
+            Full name
+            <input id="traineeName" autocomplete="name" placeholder="Example: Asha Patel">
+          </label>
+          <label>
+            Trainee ID
+            <input id="traineeId" autocomplete="off" placeholder="Example: TR-014">
+          </label>
+          <button id="saveTrainee" class="primary full" type="button">Save enrolled face</button>
+          <p class="hint">Capture a clear front-facing photo before saving.</p>
+        </aside>
+      </section>
+
+      <section class="records">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h2>Attendance</h2>
+          </div>
+          <div class="record-actions">
+            <button id="exportCsv" type="button">Export CSV</button>
+            <button id="clearToday" type="button">Clear today</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="attendanceRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="rowTemplate">
+      <tr>
+        <td data-label="Name"></td>
+        <td data-label="ID"></td>
+        <td data-label="Status"></td>
+        <td data-label="Time"></td>
+        <td data-label="Action"><button type="button" class="small"></button></td>
+      </tr>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
